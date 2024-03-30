@@ -3,6 +3,7 @@ import Modal from "./Modal";
 import { useEffect, useState } from "react";
 import { Authorization } from "../../credentials/Auth";
 import { Context } from "./Context";
+import { AppendLineBreak } from "../functions/LineBreak";
 
 interface AddListingProps {
   close: () => void;
@@ -20,33 +21,28 @@ type AddProduct = {
   sellerId: number;
 };
 
-type Categories = [
-  {
-    id: number;
-    categoryName: string;
-  }
-];
+type Categories = {
+  id: number;
+  categoryName: string;
+};
 
-type Condition = [
-  {
-    id: number;
-    conditionName: string;
-  }
-];
+type Condition = {
+  id: number;
+  conditionName: string;
+};
 
-type Warranty = [
-  {
-    id: number;
-    warrantyName: string;
-  }
-];
+type Warranty = {
+  id: number;
+  warrantyName: string;
+};
 
 function AddListing(props: AddListingProps) {
   let context = Context();
-  const { register, handleSubmit } = useForm<AddProduct>();
+
+  const { register, handleSubmit, reset } = useForm<AddProduct>();
 
   const onSubmit: SubmitHandler<AddProduct> = async (data) => {
-    console.log({ ...data, sellerId: context.userDetails.id });
+    // console.log(AppendLineBreak(data.details));
     try {
       const res = await fetch("https://localhost:44308/product/add", {
         method: "post",
@@ -56,7 +52,14 @@ function AddListing(props: AddListingProps) {
           "Access-Control-Allow-Origin": "*",
           Authorization: `${Authorization}`,
         },
-        body: JSON.stringify({ ...data, sellerId: context.userDetails.id }),
+        body: JSON.stringify({
+          ...data,
+          sellerId: context.userDetails.id,
+          details: AppendLineBreak(data.details),
+          categoryId: data.categoryId,
+          conditionId: data.conditionId,
+          warrantyId: data.warrantyId,
+        }),
       });
       const response = await res.json();
       if (response.code == 200) {
@@ -68,16 +71,15 @@ function AddListing(props: AddListingProps) {
     }
   };
 
-  const [categories, setCategories] = useState<Categories>([
-    {
-      id: 0,
-      categoryName: "",
-    },
-  ]);
+  const [categories, setCategories] = useState<Categories[]>();
 
-  const [conditions, setConditions] = useState<Condition>();
+  const [conditions, setConditions] = useState<Condition[]>();
 
-  const [warranties, setWarranties] = useState<Warranty>();
+  const [warranties, setWarranties] = useState<Warranty[]>();
+
+  useEffect(() => {
+    reset();
+  }, [reset, categories, conditions, warranties]);
 
   useEffect(() => {
     FetchCategories();
@@ -93,6 +95,7 @@ function AddListing(props: AddListingProps) {
           "Content-Type": "application/json",
           Accept: "application/json",
           "Access-Control-Allow-Origin": "*",
+          Authorization: Authorization,
         },
       });
       let response = await res.json();
@@ -110,6 +113,7 @@ function AddListing(props: AddListingProps) {
           "Content-Type": "application/json",
           Accept: "application/json",
           "Access-Control-Allow-Origin": "*",
+          Authorization: Authorization,
         },
       });
       let response = await res.json();
@@ -127,6 +131,7 @@ function AddListing(props: AddListingProps) {
           "Content-Type": "application/json",
           Accept: "application/json",
           "Access-Control-Allow-Origin": "*",
+          Authorization: Authorization,
         },
       });
       let response = await res.json();
@@ -139,7 +144,7 @@ function AddListing(props: AddListingProps) {
   return (
     <Modal onClick={props.close}>
       <div
-        className="bg-white p-5 rounded w-90 max-w-sm"
+        className="bg-white p-5 rounded w-90 max-w-sm h-5/6 overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <h3
@@ -187,7 +192,7 @@ function AddListing(props: AddListingProps) {
               <label>Category</label>
               <select
                 className="border border-slate-400 outline-none"
-                {...register("categoryId")}
+                {...register("categoryId", { valueAsNumber: true })}
               >
                 {categories?.map((element, index) => {
                   return (
@@ -203,7 +208,7 @@ function AddListing(props: AddListingProps) {
               <label>Condition</label>
               <select
                 className="border border-slate-400 outline-none"
-                {...register("conditionId")}
+                {...register("conditionId", { valueAsNumber: true })}
               >
                 {conditions?.map((element, index) => {
                   return (
@@ -219,7 +224,7 @@ function AddListing(props: AddListingProps) {
               <label>Warranty</label>
               <select
                 className="border border-slate-400 outline-none"
-                {...register("warrantyId")}
+                {...register("warrantyId", { valueAsNumber: true })}
               >
                 {warranties?.map((element, index) => {
                   return (

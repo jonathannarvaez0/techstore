@@ -1,6 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import Modal from "./Modal";
 import { useState } from "react";
+import { Authorization } from "../../credentials/Auth";
 
 interface SignupProps {
   close: () => void;
@@ -32,6 +33,7 @@ function Signup(props: SignupProps) {
           "Content-Type": "application/json",
           Accept: "application/json",
           "Access-Control-Allow-Origin": "*",
+          Authorization: Authorization,
         },
         body: JSON.stringify(data),
       });

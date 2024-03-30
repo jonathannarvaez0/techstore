@@ -50,25 +50,7 @@ function App() {
     useState<boolean>(false);
   const [isMyItemsVisible, setIsMyItemsVisible] = useState<boolean>(false);
 
-  const [products, setProducts] = useState<Product>([
-    {
-      id: 0,
-      productName: " ",
-      price: "",
-      details: " ",
-      location: "",
-      datePosted: "",
-      categoryId: 0,
-      categoryName: "",
-      conditionId: 1,
-      conditionName: "",
-      warrantyId: 1,
-      warrantyName: "",
-      sellerUsername: "",
-      sellerEmail: "",
-      sellerContact: "",
-    },
-  ]);
+  const [products, setProducts] = useState<Product>();
 
   const [categories, setCategories] = useState<Categories>([
     {
@@ -232,7 +214,7 @@ function App() {
             <div className="border border-slate-300 p-2">
               <div>
                 {products
-                  .filter((elem) =>
+                  ?.filter((elem) =>
                     filterCondition == 0
                       ? true
                       : elem.categoryId === filterCondition
@@ -262,6 +244,7 @@ function App() {
                       //   </div>
                       // </div>
                       <Card
+                        key={index}
                         element={element}
                         index={index}
                         setSelectedProduct={(element) =>
@@ -289,7 +272,10 @@ function App() {
         ></AddListing>
       )}
       {isProductFullDetailsVisible && (
-        <FullDetails product={selectedProduct}></FullDetails>
+        <FullDetails
+          close={() => setIsProductFullDetailsVisible(false)}
+          product={selectedProduct}
+        ></FullDetails>
       )}
       {isLogoutConfirmationVisible && (
         <LogoutConfirmation
