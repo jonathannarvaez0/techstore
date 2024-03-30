@@ -1,3 +1,4 @@
+import { DisplayTextWithLineBrak } from "../functions/LineBreak";
 import Modal from "./Modal";
 
 interface FullDetailsProps {
@@ -18,11 +19,12 @@ interface FullDetailsProps {
     sellerEmail: string;
     sellerContact: string;
   };
+  close: () => void;
 }
 
 function FullDetails(props: FullDetailsProps) {
   return (
-    <Modal>
+    <Modal onClick={props.close}>
       <div className="bg-white p-5 rounded w-90 max-w-xl">
         <div className="bg-main p-3 ">
           <h3 className="text-white font-semibold">Items Details</h3>
@@ -56,10 +58,7 @@ function FullDetails(props: FullDetailsProps) {
               {props.product.sellerContact}
             </span>
           </p>
-          <p>{props.product.details}</p>
-          <p>
-            hello <br></br> there
-          </p>
+          <div>{DisplayTextWithLineBrak(props.product.details)}</div>
         </div>
       </div>
     </Modal>
