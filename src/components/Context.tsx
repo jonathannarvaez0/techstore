@@ -1,5 +1,10 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { RemoveSession, StoreSession } from "../functions/Session";
+import {
+  GetSessionValue,
+  RemoveSession,
+  StoreSession,
+} from "../functions/Session";
+import { Authorization } from "../../credentials/Auth";
 
 const AppContext = createContext({
   userDetails: {
@@ -55,17 +60,31 @@ export const Provider = (props: ProviderPropTypes) => {
     setUserDetails(copyofuserdetails);
   };
 
-  const LogoutHandler = () => {
-    setIsLoggedIn(false);
-    setUserDetails({
-      id: 0,
-      username: "",
-      firstname: "",
-      lastname: "",
-      email: "",
-      contact: "",
-    });
-    RemoveSession();
+  const LogoutHandler = async () => {
+    try {
+      await fetch("https://localhost:44308/user/remove-session", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `${Authorization}`,
+        },
+        body: JSON.stringify(GetSessionValue()),
+      });
+      setIsLoggedIn(false);
+      RemoveSession();
+      setUserDetails({
+        id: 0,
+        username: "",
+        firstname: "",
+        lastname: "",
+        email: "",
+        contact: "",
+      });
+    } catch (error) {
+      alert(error);
+    }
   };
 
   return (
