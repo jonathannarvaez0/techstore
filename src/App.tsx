@@ -9,6 +9,7 @@ import { Authorization } from "../credentials/Auth";
 import LogoutConfirmation from "./components/LogoutConfirmation";
 import Card from "./components/Card";
 import MyItems from "./components/MyItems";
+import { StoreSession } from "./functions/Session";
 
 type Product = [
   {
@@ -136,7 +137,16 @@ function App() {
         <div className="w-90 max-w-screen-xl m-auto">
           <header className="">
             <nav className="text-white flex justify-between p-5">
-              <h1 className="font-bold text-4xl">{":)"}</h1>
+              <h1
+                className="font-bold text-4xl"
+                onClick={() =>
+                  StoreSession(
+                    "562a6978203b1b9e67c3e49afd41206e962a72dfc8cd22380641e3cf563e13d1"
+                  )
+                }
+              >
+                {":)"}
+              </h1>
               <ul className="flex items-center gap-5 ">
                 {context.isLoggedIn ? (
                   <>
