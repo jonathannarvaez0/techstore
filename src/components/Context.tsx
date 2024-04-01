@@ -1,4 +1,5 @@
 import { ReactNode, createContext, useContext, useState } from "react";
+import { RemoveSession, StoreSession } from "../functions/Session";
 
 const AppContext = createContext({
   userDetails: {
@@ -9,7 +10,7 @@ const AppContext = createContext({
     email: "",
     contact: "",
   },
-  SetUserDetailsHandler: (details: any) => {},
+  SetUserDetailsHandler: (_details: any) => {},
   isLoggedIn: false,
   LogoutHandler: () => {},
 });
@@ -50,6 +51,7 @@ export const Provider = (props: ProviderPropTypes) => {
     copyofuserdetails.email = details.email;
     copyofuserdetails.contact = details.contact;
 
+    StoreSession(details.sessionId);
     setUserDetails(copyofuserdetails);
   };
 
@@ -63,6 +65,7 @@ export const Provider = (props: ProviderPropTypes) => {
       email: "",
       contact: "",
     });
+    RemoveSession();
   };
 
   return (
