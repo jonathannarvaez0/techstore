@@ -3,7 +3,7 @@ import "./App.css";
 import Login from "./components/Login";
 import { Context } from "./components/Context";
 import Signup from "./components/Signup";
-import AddListing from "./components/AddListing";
+import AddListing from "./components/AddOrEditListing";
 import FullDetails from "./components/FullDetails";
 import { Authorization } from "../credentials/Auth";
 import LogoutConfirmation from "./components/LogoutConfirmation";

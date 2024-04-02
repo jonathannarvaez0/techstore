@@ -3,14 +3,19 @@ import Modal from "./Modal";
 import { useEffect, useState } from "react";
 import { Authorization } from "../../credentials/Auth";
 import { Context } from "./Context";
-import { AppendLineBreak } from "../functions/LineBreak";
+import {
+  AppendLineBreak,
+  DisplayTextWithLineBreakForTextArea,
+} from "../functions/LineBreak";
 
-interface AddListingProps {
+interface AddOrEditListingProps {
   close: () => void;
   refresh: () => void;
+  productToEdit?: AddOrEditProduct;
 }
 
-type AddProduct = {
+type AddOrEditProduct = {
+  id: number;
   productName: string;
   price: string;
   location: string;
@@ -36,7 +41,7 @@ type Warranty = {
   warrantyName: string;
 };
 
-function AddListing(props: AddListingProps) {
+function AddOrEditListing(props: AddOrEditListingProps) {
   let context = Context();
 
   const {
@@ -44,12 +49,29 @@ function AddListing(props: AddListingProps) {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<AddProduct>();
+  } = useForm<AddOrEditProduct>({
+    defaultValues: {
+      id: props.productToEdit?.id,
+      productName: props.productToEdit?.productName,
+      price: props.productToEdit?.price,
+      location: props.productToEdit?.location,
+      categoryId: props.productToEdit?.categoryId,
+      conditionId: props.productToEdit?.conditionId,
+      warrantyId: props.productToEdit?.warrantyId,
+      details: DisplayTextWithLineBreakForTextArea(
+        props.productToEdit?.details
+      ),
+    },
+  });
 
-  const onSubmit: SubmitHandler<AddProduct> = async (data) => {
-    // console.log(AppendLineBreak(data.details));
+  const onSubmit: SubmitHandler<AddOrEditProduct> = async (data) => {
+    let endpoint = "";
+    if (props.productToEdit)
+      endpoint = "https://localhost:44308/product/modify";
+    else endpoint = "https://localhost:44308/product/add";
+
     try {
-      const res = await fetch("https://localhost:44308/product/add", {
+      const res = await fetch(endpoint, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -251,7 +273,7 @@ function AddListing(props: AddListingProps) {
             <div className="">
               <input
                 type="submit"
-                value={"Add"}
+                value={props.productToEdit == null ? "Add" : "Edit"}
                 className="hover:cursor-pointer w-full rounded-2xl bg-accent p-2 text-white font-bold"
               ></input>
             </div>
@@ -261,4 +283,4 @@ function AddListing(props: AddListingProps) {
     </Modal>
   );
 }
-export default AddListing;
+export default AddOrEditListing;
