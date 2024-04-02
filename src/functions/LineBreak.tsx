@@ -1,4 +1,4 @@
-export const DisplayTextWithLineBrak = (text: string) => {
+export const DisplayTextWithLineBreak = (text: string) => {
   let textArray = text.split(" ");
 
   let paragraph = textArray.map((element: string, index: number) => {
@@ -14,4 +14,21 @@ export const DisplayTextWithLineBrak = (text: string) => {
 
 export const AppendLineBreak = (text: string) => {
   return text.replace(/\n/g, " <br><br> ");
+};
+
+export const DisplayTextWithLineBreakForTextArea = (
+  text: string | undefined
+) => {
+  let textArray = text?.split(" ");
+
+  let paragraph = "";
+  textArray?.map((element: string) => {
+    if (element == "<br><br>") {
+      paragraph += "\n";
+    } else {
+      paragraph += element;
+    }
+  });
+
+  return paragraph;
 };

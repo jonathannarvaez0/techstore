@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Authorization } from "../../credentials/Auth";
 import DeleteConfirmation from "./DeleteConfirmation";
+import AddListing from "./AddOrEditListing";
 
 interface MyItemsProps {
   close: () => void;
@@ -57,7 +58,12 @@ function MyItems(props: MyItemsProps) {
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
     useState<boolean>(false);
 
+  const [isEditListingVisible, setIsEditListingVisible] =
+    useState<boolean>(false);
+
   const [productIdForDeletion, setProductIdForDeletion] = useState<number>(0);
+
+  const [productToEdit, setProductToEdit] = useState<Product>();
 
   const DeleteProduct = async () => {
     try {
@@ -98,7 +104,13 @@ function MyItems(props: MyItemsProps) {
               }
             >
               <div className="absolute right-1 top-1 flex gap-2 items-center">
-                <span className="text-xs text-main hover:cursor-pointer">
+                <span
+                  className="text-xs text-main hover:cursor-pointer"
+                  onClick={() => {
+                    setProductToEdit(element);
+                    setIsEditListingVisible(true);
+                  }}
+                >
                   <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
                 </span>
                 <span
@@ -127,6 +139,13 @@ function MyItems(props: MyItemsProps) {
           close={() => setIsDeleteConfirmationVisible(false)}
           deleteHandler={DeleteProduct}
         ></DeleteConfirmation>
+      )}
+      {isEditListingVisible && (
+        <AddListing
+          close={() => setIsEditListingVisible(false)}
+          refresh={props.refresh}
+          productToEdit={productToEdit}
+        ></AddListing>
       )}
     </Modal>
   );
