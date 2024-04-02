@@ -2,10 +2,15 @@ import { useState } from "react";
 import Modal from "./Modal";
 import Card from "./Card";
 import FullDetails from "./FullDetails";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Authorization } from "../../credentials/Auth";
+import DeleteConfirmation from "./DeleteConfirmation";
 
 interface MyItemsProps {
   close: () => void;
   myItems: Product[] | undefined;
+  refresh: () => void;
 }
 
 type Product = {
@@ -49,12 +54,38 @@ function MyItems(props: MyItemsProps) {
   const [isProductFullDetailsVisible, setIsProductFullDetailsVisible] =
     useState<boolean>(false);
 
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
+    useState<boolean>(false);
+
+  const [productIdForDeletion, setProductIdForDeletion] = useState<number>(0);
+
+  const DeleteProduct = async () => {
+    try {
+      await fetch(
+        `https://localhost:44308/product/delete/${productIdForDeletion}`,
+        {
+          method: "get",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: `${Authorization}`,
+          },
+        }
+      );
+      props.refresh();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   return (
     <Modal onClick={props.close}>
       <div
-        className="bg-white p-5 rounded w-90 max-w-xxl"
+        className="bg-white p-5 rounded w-90 max-w-xxl overflow-visible"
         onClick={(e) => e.stopPropagation()}
       >
+        <h1>My Items</h1>
         {props.myItems?.map((element: Product, index: number) => {
           return (
             <Card
@@ -65,7 +96,22 @@ function MyItems(props: MyItemsProps) {
               setIsProductFullDetailsVisible={(condition) =>
                 setIsProductFullDetailsVisible(condition)
               }
-            ></Card>
+            >
+              <div className="absolute right-1 top-1 flex gap-2 items-center">
+                <span className="text-xs text-main hover:cursor-pointer">
+                  <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
+                </span>
+                <span
+                  className="text-xs text-main hover:cursor-pointer"
+                  onClick={() => {
+                    setProductIdForDeletion(element.id);
+                    setIsDeleteConfirmationVisible(true);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+                </span>
+              </div>
+            </Card>
           );
         })}
       </div>
@@ -75,6 +121,12 @@ function MyItems(props: MyItemsProps) {
           close={() => setIsProductFullDetailsVisible(false)}
           product={selectedProduct}
         ></FullDetails>
+      )}
+      {isDeleteConfirmationVisible && (
+        <DeleteConfirmation
+          close={() => setIsDeleteConfirmationVisible(false)}
+          deleteHandler={DeleteProduct}
+        ></DeleteConfirmation>
       )}
     </Modal>
   );

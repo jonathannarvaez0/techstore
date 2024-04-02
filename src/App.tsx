@@ -9,7 +9,6 @@ import { Authorization } from "../credentials/Auth";
 import LogoutConfirmation from "./components/LogoutConfirmation";
 import Card from "./components/Card";
 import MyItems from "./components/MyItems";
-import { StoreSession } from "./functions/Session";
 
 type Product = {
   id: number;
@@ -137,16 +136,7 @@ function App() {
         <div className="w-90 max-w-screen-xl m-auto">
           <header className="">
             <nav className="text-white flex justify-between p-5">
-              <h1
-                className="font-bold text-4xl"
-                onClick={() =>
-                  StoreSession(
-                    "562a6978203b1b9e67c3e49afd41206e962a72dfc8cd22380641e3cf563e13d1"
-                  )
-                }
-              >
-                {":)"}
-              </h1>
+              <h1 className="font-bold text-4xl">{":)"}</h1>
               <ul className="flex items-center gap-5 ">
                 {context.isLoggedIn ? (
                   <>
@@ -231,28 +221,6 @@ function App() {
                   )
                   .map((element, index) => {
                     return (
-                      // <div
-                      //   key={index}
-                      //   className={`${index % 2 == 0 ? "bg-gray-200" : ""} p-2`}
-                      // >
-                      //   <h1
-                      //     className="text-accent font-bold hover:underline decoration-solid hover:cursor-pointer inline"
-                      //     onClick={() => {
-                      //       setSelectedProduct(element);
-                      //       setIsProductFullDetailsVisible(true);
-                      //     }}
-                      //   >
-                      //     {element.productName}
-                      //   </h1>
-                      //   <div>
-                      //     <span className="font-bold">PHP {element.price}</span>{" "}
-                      //     -{" "}
-                      //     <span className="text-accent font-semibold">
-                      //       {element.categoryName}
-                      //     </span>{" "}
-                      //     <span>({element.location})</span>
-                      //   </div>
-                      // </div>
                       <Card
                         key={index}
                         element={element}
@@ -298,6 +266,7 @@ function App() {
           myItems={products?.filter(
             (element) => element.sellerId === context.userDetails.id
           )}
+          refresh={FetchProducts}
         ></MyItems>
       )}
     </>
