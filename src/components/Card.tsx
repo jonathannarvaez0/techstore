@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 interface CardProps {
   element: {
     productName: string;
@@ -5,7 +7,7 @@ interface CardProps {
     categoryName: string;
     location: string;
   };
-
+  children?: ReactNode;
   index: number;
   setIsProductFullDetailsVisible: (condition: boolean) => void;
   setSelectedProduct: (element: any) => void;
@@ -15,7 +17,7 @@ function Card(props: CardProps) {
   return (
     <div
       key={props.index}
-      className={`${props.index % 2 == 0 ? "bg-gray-200" : ""} p-2`}
+      className={`${props.index % 2 == 0 ? "bg-gray-200" : ""} p-2 relative`}
     >
       <h1
         className="text-accent font-bold hover:underline decoration-solid hover:cursor-pointer inline"
@@ -33,6 +35,7 @@ function Card(props: CardProps) {
         </span>{" "}
         <span>({props.element.location})</span>
       </div>
+      {props.children}
     </div>
   );
 }
