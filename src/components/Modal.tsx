@@ -17,7 +17,10 @@ function Modal(props: ModalProps) {
   return (
     <div
       className="h-screen fixed bg-modal top-0 w-full flex justify-center items-center"
-      onClick={() => props.onClick()}
+      onClick={(e) => {
+        props.onClick();
+        e.stopPropagation();
+      }}
     >
       {props.children}
     </div>

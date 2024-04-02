@@ -15,6 +15,7 @@ interface FullDetailsProps {
     conditionName: string;
     warrantyId: number;
     warrantyName: string;
+    sellerId: number;
     sellerUsername: string;
     sellerEmail: string;
     sellerContact: string;
@@ -25,7 +26,10 @@ interface FullDetailsProps {
 function FullDetails(props: FullDetailsProps) {
   return (
     <Modal onClick={props.close}>
-      <div className="bg-white p-5 rounded w-90 max-w-xl">
+      <div
+        className="bg-white p-5 rounded w-90 max-w-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="bg-main p-3 ">
           <h3 className="text-white font-semibold">Items Details</h3>
         </div>

@@ -39,7 +39,12 @@ type Warranty = {
 function AddListing(props: AddListingProps) {
   let context = Context();
 
-  const { register, handleSubmit, reset } = useForm<AddProduct>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<AddProduct>();
 
   const onSubmit: SubmitHandler<AddProduct> = async (data) => {
     // console.log(AppendLineBreak(data.details));
@@ -147,13 +152,7 @@ function AddListing(props: AddListingProps) {
         className="bg-white p-5 rounded w-90 max-w-sm h-5/6 overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3
-          onClick={() => {
-            console.log(categories);
-          }}
-        >
-          Add Product
-        </h3>
+        <h3>Add Product</h3>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-2">
             <div className="flex flex-col">
@@ -165,6 +164,9 @@ function AddListing(props: AddListingProps) {
                   required: "Product name can't be blank",
                 })}
               ></input>
+              <p className="text-red-600 text-sm">
+                {errors?.productName?.message}
+              </p>
             </div>
             <div className="flex flex-col">
               <label>Price</label>
@@ -186,12 +188,13 @@ function AddListing(props: AddListingProps) {
                   required: "location name can't be blank",
                 })}
               ></input>
+              <p className="text-red-600 text-sm">{errors.location?.message}</p>
             </div>
 
             <div className="flex flex-col">
               <label>Category</label>
               <select
-                className="border border-slate-400 outline-none"
+                className="border border-slate-400 outline-none rounded"
                 {...register("categoryId", { valueAsNumber: true })}
               >
                 {categories?.map((element, index) => {
@@ -207,7 +210,7 @@ function AddListing(props: AddListingProps) {
             <div className="flex flex-col">
               <label>Condition</label>
               <select
-                className="border border-slate-400 outline-none"
+                className="border border-slate-400 outline-none rounded"
                 {...register("conditionId", { valueAsNumber: true })}
               >
                 {conditions?.map((element, index) => {
@@ -223,7 +226,7 @@ function AddListing(props: AddListingProps) {
             <div className="flex flex-col">
               <label>Warranty</label>
               <select
-                className="border border-slate-400 outline-none"
+                className="border border-slate-400 outline-none rounded"
                 {...register("warrantyId", { valueAsNumber: true })}
               >
                 {warranties?.map((element, index) => {
