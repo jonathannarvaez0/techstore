@@ -11,25 +11,24 @@ import Card from "./components/Card";
 import MyItems from "./components/MyItems";
 import { StoreSession } from "./functions/Session";
 
-type Product = [
-  {
-    id: number;
-    productName: string;
-    price: string;
-    details: string;
-    location: string;
-    datePosted: string;
-    categoryId: number;
-    categoryName: string;
-    conditionId: number;
-    conditionName: string;
-    warrantyId: number;
-    warrantyName: string;
-    sellerUsername: string;
-    sellerEmail: string;
-    sellerContact: string;
-  }
-];
+type Product = {
+  id: number;
+  productName: string;
+  price: string;
+  details: string;
+  location: string;
+  datePosted: string;
+  categoryId: number;
+  categoryName: string;
+  conditionId: number;
+  conditionName: string;
+  warrantyId: number;
+  warrantyName: string;
+  sellerId: number;
+  sellerUsername: string;
+  sellerEmail: string;
+  sellerContact: string;
+};
 
 type Categories = [
   {
@@ -51,7 +50,7 @@ function App() {
     useState<boolean>(false);
   const [isMyItemsVisible, setIsMyItemsVisible] = useState<boolean>(false);
 
-  const [products, setProducts] = useState<Product>();
+  const [products, setProducts] = useState<Product[]>();
 
   const [categories, setCategories] = useState<Categories>([
     {
@@ -62,7 +61,7 @@ function App() {
 
   const [filterCondition, setFilterCondition] = useState<number>(0);
 
-  const [selectedProduct, setSelectedProduct] = useState<Product[0]>({
+  const [selectedProduct, setSelectedProduct] = useState<Product>({
     id: 0,
     productName: " ",
     price: "",
@@ -75,6 +74,7 @@ function App() {
     conditionName: "",
     warrantyId: 1,
     warrantyName: "",
+    sellerId: 0,
     sellerUsername: "",
     sellerEmail: "",
     sellerContact: "",
@@ -293,7 +293,12 @@ function App() {
         ></LogoutConfirmation>
       )}
       {isMyItemsVisible && (
-        <MyItems close={() => setIsMyItemsVisible(false)}></MyItems>
+        <MyItems
+          close={() => setIsMyItemsVisible(false)}
+          myItems={products?.filter(
+            (element) => element.sellerId === context.userDetails.id
+          )}
+        ></MyItems>
       )}
     </>
   );
