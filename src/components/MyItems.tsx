@@ -86,7 +86,7 @@ function MyItems(props: MyItemsProps) {
   return (
     <Modal onClick={props.close}>
       <div
-        className="bg-white p-5 rounded w-90 max-w-xxl overflow-visible"
+        className="bg-white p-5 rounded w-90 max-w-xxl"
         onClick={(e) => e.stopPropagation()}
       >
         <h1>My Items</h1>

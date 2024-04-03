@@ -6,6 +6,7 @@ type Response = {
 export const ErrorHandling = (response: Response) => {
   switch (response.code) {
     case 401:
+    case 500:
       alert(response.message);
       return false;
 

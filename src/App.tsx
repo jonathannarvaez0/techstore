@@ -11,6 +11,7 @@ import Card from "./components/Card";
 import MyItems from "./components/MyItems";
 import { Endpoint } from "../credentials/Endpoint";
 import { ErrorHandling } from "./functions/HttpErrorHandling";
+import MyBookmarks from "./components/MyBookmarks";
 
 type Product = {
   id: number;
@@ -50,6 +51,8 @@ function App() {
   const [isLogoutConfirmationVisible, setIsLogoutConfirmationVisible] =
     useState<boolean>(false);
   const [isMyItemsVisible, setIsMyItemsVisible] = useState<boolean>(false);
+  const [isMyBookmarksVisible, setIsMyBookmarksVisible] =
+    useState<boolean>(false);
 
   const [products, setProducts] = useState<Product[]>();
 
@@ -175,17 +178,19 @@ function App() {
                 <div className="flex gap-2">
                   <p
                     className="text-accent font-semibold hover:cursor-pointer border-main border-b-2 hover:border-white"
-                    onClick={() => {
-                      setIsMyItemsVisible(true);
-                    }}
+                    onClick={() => setIsMyItemsVisible(true)}
                   >
                     My Items
                   </p>
                   <p
                     className="text-accent font-semibold hover:cursor-pointer border-main border-b-2 hover:border-white"
-                    onClick={() => {
-                      setIsAddListingVisible(true);
-                    }}
+                    onClick={() => setIsMyBookmarksVisible(true)}
+                  >
+                    My Bookmarks
+                  </p>
+                  <p
+                    className="text-accent font-semibold hover:cursor-pointer border-main border-b-2 hover:border-white"
+                    onClick={() => setIsAddListingVisible(true)}
                   >
                     Sell
                   </p>
@@ -265,6 +270,9 @@ function App() {
           )}
           refresh={FetchProducts}
         ></MyItems>
+      )}
+      {isMyBookmarksVisible && (
+        <MyBookmarks close={() => setIsMyBookmarksVisible(false)}></MyBookmarks>
       )}
     </>
   );
