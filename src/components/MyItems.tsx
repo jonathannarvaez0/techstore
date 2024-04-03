@@ -7,6 +7,7 @@ import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Authorization } from "../../credentials/Auth";
 import DeleteConfirmation from "./DeleteConfirmation";
 import AddListing from "./AddOrEditListing";
+import { Endpoint } from "../../credentials/Endpoint";
 
 interface MyItemsProps {
   close: () => void;
@@ -67,18 +68,15 @@ function MyItems(props: MyItemsProps) {
 
   const DeleteProduct = async () => {
     try {
-      await fetch(
-        `https://localhost:44308/product/delete/${productIdForDeletion}`,
-        {
-          method: "get",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "Access-Control-Allow-Origin": "*",
-            Authorization: `${Authorization}`,
-          },
-        }
-      );
+      await fetch(`${Endpoint}/product/delete/${productIdForDeletion}`, {
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `${Authorization}`,
+        },
+      });
       props.refresh();
     } catch (error) {
       alert(error);

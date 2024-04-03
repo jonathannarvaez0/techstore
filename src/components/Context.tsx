@@ -5,6 +5,7 @@ import {
   StoreSession,
 } from "../functions/Session";
 import { Authorization } from "../../credentials/Auth";
+import { Endpoint } from "../../credentials/Endpoint";
 
 const AppContext = createContext({
   userDetails: {
@@ -62,7 +63,7 @@ export const Provider = (props: ProviderPropTypes) => {
 
   const LogoutHandler = async () => {
     try {
-      await fetch("https://localhost:44308/user/remove-session", {
+      await fetch(`${Endpoint}/user/remove-session`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
