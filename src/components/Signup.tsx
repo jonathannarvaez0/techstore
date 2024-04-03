@@ -2,6 +2,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Modal from "./Modal";
 import { useState } from "react";
 import { Authorization } from "../../credentials/Auth";
+import { Endpoint } from "../../credentials/Endpoint";
+import { ErrorHandling } from "../functions/HttpErrorHandling";
 
 interface SignupProps {
   close: () => void;
@@ -27,7 +29,7 @@ function Signup(props: SignupProps) {
 
   const onSubmit: SubmitHandler<SignupInput> = async (data) => {
     try {
-      const res = await fetch("https://localhost:44308/user/signup", {
+      const res = await fetch(`${Endpoint}/user/signup`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -38,16 +40,17 @@ function Signup(props: SignupProps) {
         body: JSON.stringify(data),
       });
       const response = await res.json();
-      console.log(response);
-      if (response.code == 201) {
-        setErrorMessage(response.message);
-      } else {
-        setErrorMessage("");
-        props.close();
-        alert("You can now login");
+      if (ErrorHandling(response)) {
+        if (typeof ErrorHandling(response) == "string") {
+          setErrorMessage(String(ErrorHandling(response)));
+        } else {
+          setErrorMessage("");
+          props.close();
+          alert("You can now login");
+        }
       }
     } catch (error) {
-      console.log(error);
+      alert();
     }
   };
   return (

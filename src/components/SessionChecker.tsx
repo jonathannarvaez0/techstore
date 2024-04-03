@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { CheckSessionIfExisting, GetSessionValue } from "../functions/Session";
 import { Authorization } from "../../credentials/Auth";
 import { Context } from "./Context";
+import { Endpoint } from "../../credentials/Endpoint";
 
 interface SessionCheckerProps {
   children: React.ReactNode;
@@ -18,7 +19,7 @@ export function SessionChecker(props: SessionCheckerProps) {
 
   const LoginUsingSession = async (data: string | null) => {
     try {
-      const res = await fetch("https://localhost:44308/user/relogin", {
+      const res = await fetch(`${Endpoint}/user/relogin`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",

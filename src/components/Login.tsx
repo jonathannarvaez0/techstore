@@ -3,6 +3,8 @@ import Modal from "./Modal";
 import { useState } from "react";
 import { Context } from "./Context";
 import { Authorization } from "../../credentials/Auth";
+import { Endpoint } from "../../credentials/Endpoint";
+import { ErrorHandling } from "../functions/HttpErrorHandling";
 
 interface LoginProps {
   close: () => void;
@@ -22,7 +24,7 @@ function Login(props: LoginProps) {
 
   const onSubmit: SubmitHandler<LoginInput> = async (data) => {
     try {
-      const res = await fetch("https://localhost:44308/user/signin", {
+      const res = await fetch(`${Endpoint}/user/signin`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -34,15 +36,17 @@ function Login(props: LoginProps) {
       });
       const response = await res.json();
 
-      if (response.code == 404 || response.code == 401) {
-        setErrorMessage(response.message);
-      } else {
-        setErrorMessage("");
-        context.SetUserDetailsHandler(response);
-        props.close();
+      if (ErrorHandling(response)) {
+        if (typeof ErrorHandling(response) == "string") {
+          setErrorMessage(String(ErrorHandling(response)));
+        } else {
+          setErrorMessage("");
+          context.SetUserDetailsHandler(response);
+          props.close();
+        }
       }
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 

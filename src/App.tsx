@@ -9,6 +9,8 @@ import { Authorization } from "../credentials/Auth";
 import LogoutConfirmation from "./components/LogoutConfirmation";
 import Card from "./components/Card";
 import MyItems from "./components/MyItems";
+import { Endpoint } from "../credentials/Endpoint";
+import { ErrorHandling } from "./functions/HttpErrorHandling";
 
 type Product = {
   id: number;
@@ -86,7 +88,7 @@ function App() {
 
   const FetchProducts = async () => {
     try {
-      let res = await fetch("https://localhost:44308/product/all", {
+      let res = await fetch(`${Endpoint}/product/all`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -96,20 +98,15 @@ function App() {
         },
       });
       let response = await res.json();
-      if (response.code == 401) {
-        alert(response.message);
-        console.log("hehe");
-      } else {
-        setProducts(response);
-      }
+      if (ErrorHandling(response)) setProducts(response);
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 
   const FetchCategories = async () => {
     try {
-      let res = await fetch("https://localhost:44308/product/category", {
+      let res = await fetch(`${Endpoint}/product/category`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -118,15 +115,15 @@ function App() {
         },
       });
       let response = await res.json();
-      let copyofcategories = JSON.parse(JSON.stringify(categories));
-
-      response.forEach((element: Categories) => {
-        copyofcategories.push(element);
-      });
-
-      setCategories(copyofcategories);
+      if (ErrorHandling(response)) {
+        let copyofcategories = JSON.parse(JSON.stringify(categories));
+        response.forEach((element: Categories) => {
+          copyofcategories.push(element);
+        });
+        setCategories(copyofcategories);
+      }
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 

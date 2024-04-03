@@ -7,6 +7,8 @@ import {
   AppendLineBreak,
   DisplayTextWithLineBreakForTextArea,
 } from "../functions/LineBreak";
+import { Endpoint } from "../../credentials/Endpoint";
+import { ErrorHandling } from "../functions/HttpErrorHandling";
 
 interface AddOrEditListingProps {
   close: () => void;
@@ -66,12 +68,11 @@ function AddOrEditListing(props: AddOrEditListingProps) {
 
   const onSubmit: SubmitHandler<AddOrEditProduct> = async (data) => {
     let endpoint = "";
-    if (props.productToEdit)
-      endpoint = "https://localhost:44308/product/modify";
-    else endpoint = "https://localhost:44308/product/add";
+    if (props.productToEdit) endpoint = "/product/modify";
+    else endpoint = "product/add";
 
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetch(`${Endpoint}/product${endpoint}`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +90,7 @@ function AddOrEditListing(props: AddOrEditListingProps) {
         }),
       });
       const response = await res.json();
-      if (response.code == 200) {
+      if (ErrorHandling(response)) {
         props.close();
         props.refresh();
       }
@@ -116,7 +117,7 @@ function AddOrEditListing(props: AddOrEditListingProps) {
 
   const FetchCategories = async () => {
     try {
-      let res = await fetch("https://localhost:44308/product/category", {
+      let res = await fetch(`${Endpoint}/product/category`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +127,7 @@ function AddOrEditListing(props: AddOrEditListingProps) {
         },
       });
       let response = await res.json();
-      setCategories(response);
+      if (ErrorHandling(response)) setCategories(response);
     } catch (error) {
       alert(error);
     }
@@ -134,7 +135,7 @@ function AddOrEditListing(props: AddOrEditListingProps) {
 
   const FetchConditions = async () => {
     try {
-      let res = await fetch("https://localhost:44308/product/condition", {
+      let res = await fetch(`${Endpoint}/product/condition`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -144,7 +145,7 @@ function AddOrEditListing(props: AddOrEditListingProps) {
         },
       });
       let response = await res.json();
-      setConditions(response);
+      if (ErrorHandling(response)) setConditions(response);
     } catch (error) {
       alert(error);
     }
@@ -152,7 +153,7 @@ function AddOrEditListing(props: AddOrEditListingProps) {
 
   const FetchWarranties = async () => {
     try {
-      let res = await fetch("https://localhost:44308/product/warranty", {
+      let res = await fetch(`${Endpoint}/product/warranty`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -162,7 +163,7 @@ function AddOrEditListing(props: AddOrEditListingProps) {
         },
       });
       let response = await res.json();
-      setWarranties(response);
+      if (ErrorHandling(response)) setWarranties(response);
     } catch (error) {
       alert(error);
     }
