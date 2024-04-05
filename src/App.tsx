@@ -12,6 +12,10 @@ import MyItems from "./components/MyItems";
 import { Endpoint } from "../credentials/Endpoint";
 import { ErrorHandling } from "./functions/HttpErrorHandling";
 import MyBookmarks from "./components/MyBookmarks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookmark as bookmarkSolid } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as bookmarkRegular } from "@fortawesome/free-regular-svg-icons/faBookmark";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 type Product = {
   id: number;
@@ -30,6 +34,7 @@ type Product = {
   sellerUsername: string;
   sellerEmail: string;
   sellerContact: string;
+  isBookmarked: boolean;
 };
 
 type Categories = [
@@ -82,24 +87,28 @@ function App() {
     sellerUsername: "",
     sellerEmail: "",
     sellerContact: "",
+    isBookmarked: false,
   });
 
   useEffect(() => {
     FetchProducts();
     FetchCategories();
-  }, []);
+  }, [context.isLoggedIn]);
 
   const FetchProducts = async () => {
     try {
-      let res = await fetch(`${Endpoint}/product/all`, {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "Access-Control-Allow-Origin": "*",
-          Authorization: `${Authorization}`,
-        },
-      });
+      let res = await fetch(
+        `${Endpoint}/product/all/${context.userDetails.id}`,
+        {
+          method: "get",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: `${Authorization}`,
+          },
+        }
+      );
       let response = await res.json();
       if (ErrorHandling(response)) setProducts(response);
     } catch (error) {
@@ -130,13 +139,40 @@ function App() {
     }
   };
 
+  const AddOrRemoveBookMark = async (productId: number, isRemove: boolean) => {
+    let endpoint = isRemove == true ? "delete" : "add";
+    try {
+      const res = await fetch(`${Endpoint}/product/bookmark/${endpoint}`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `${Authorization}`,
+        },
+        body: JSON.stringify({
+          bookmarkerId: context.userDetails.id,
+          itemBookmarkedId: productId,
+        }),
+      });
+      const response = await res.json();
+      if (ErrorHandling(response)) {
+        FetchProducts();
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   return (
     <>
       <main className="bg-main min-h-svh">
         <div className="w-90 max-w-screen-xl m-auto">
           <header className="">
             <nav className="text-white flex justify-between p-5">
-              <h1 className="font-bold text-4xl">{":)"}</h1>
+              <h1 className="font-bold text-4xl" onClick={FetchProducts}>
+                {":)"}
+              </h1>
               <ul className="flex items-center gap-5 ">
                 {context.isLoggedIn ? (
                   <>
@@ -233,7 +269,29 @@ function App() {
                         setIsProductFullDetailsVisible={(condition) =>
                           setIsProductFullDetailsVisible(condition)
                         }
-                      ></Card>
+                      >
+                        {context.isLoggedIn && (
+                          <div className="absolute right-1 top-1 flex gap-2 items-center">
+                            <span
+                              className="text-xs text-main hover:cursor-pointer"
+                              onClick={() =>
+                                AddOrRemoveBookMark(
+                                  element.id,
+                                  element.isBookmarked == true ? true : false
+                                )
+                              }
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  element.isBookmarked
+                                    ? bookmarkSolid
+                                    : (bookmarkRegular as IconProp)
+                                }
+                              ></FontAwesomeIcon>
+                            </span>
+                          </div>
+                        )}
+                      </Card>
                     );
                   })}
               </div>
