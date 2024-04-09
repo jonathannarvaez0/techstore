@@ -330,7 +330,10 @@ function App() {
         ></MyItems>
       )}
       {isMyBookmarksVisible && (
-        <MyBookmarks close={() => setIsMyBookmarksVisible(false)}></MyBookmarks>
+        <MyBookmarks
+          close={() => setIsMyBookmarksVisible(false)}
+          refresh={FetchProducts}
+        ></MyBookmarks>
       )}
     </>
   );

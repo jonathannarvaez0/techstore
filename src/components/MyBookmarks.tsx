@@ -12,6 +12,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface MyBookmarksProps {
   close: () => void;
+  refresh: () => void;
 }
 
 type Bookmark = {
@@ -131,6 +132,7 @@ function MyBookmarks(props: MyBookmarksProps) {
         }
       );
       FetchBookmarks();
+      props.refresh();
     } catch (error) {
       alert(error);
     }
